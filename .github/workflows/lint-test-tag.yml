@@ -32,13 +32,13 @@ jobs:
       - name: Run linter
         run: |
           # stop the build if there are Python syntax errors or undefined names
-          flake8 project_name/ tests/ --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 staflversion/ tests/ --count --select=E9,F63,F7,F82 --show-source --statistics
           
           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-          flake8 project_name/ tests/ --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+          flake8 staflversion/ tests/ --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
           
-          black -l 79 --check project_name/ tests/
-          mypy --ignore-missing-imports project_name/ tests/
+          black -l 79 --check staflversion/ tests/
+          mypy --ignore-missing-imports staflversion/ tests/
          
 
   tests:
@@ -66,7 +66,7 @@ jobs:
       
       - name: Run tests
         run: |
-          pytest -v --cov-report term --cov-report xml --cov-report html --cov-config .coveragerc --cov=project_name -l --tb=short --maxfail=1 tests/
+          pytest -v --cov-report term --cov-report xml --cov-report html --cov-config .coveragerc --cov=staflversion -l --tb=short --maxfail=1 tests/
 
           
   build-exe:
@@ -107,14 +107,14 @@ jobs:
     - name: Update version
       shell: pwsh
       run: |
-        rm project_name/VERSION
-        echo "${{ env.GitVersion_SemVer }}_${{ env.GitVersion_BuildMetaData}}" >> project_name/VERSION
+        rm staflversion/VERSION
+        echo "${{ env.GitVersion_SemVer }}_${{ env.GitVersion_BuildMetaData}}" >> staflversion/VERSION
         
     - name: Build Executable
       shell: pwsh
       run: |
         pyinstaller --clean single_exe.spec
-        mv dist/project_name.exe dist/project_name_'${{ env.GitVersion_SemVer }}_${{ env.GitVersion_BuildMetaData}}'.exe
+        mv dist/staflversion.exe dist/staflversion_'${{ env.GitVersion_SemVer }}_${{ env.GitVersion_BuildMetaData}}'.exe
 
     - name: Create a GitHub release
       if: github.ref == 'refs/heads/main'

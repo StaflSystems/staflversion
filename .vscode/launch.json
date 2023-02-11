@@ -10,7 +10,7 @@
             "request": "launch",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "module": "project_name"
+            "module": "staflversion"
         },
     ]
 }

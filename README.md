@@ -24,7 +24,7 @@ Stafl python template for modules and pyinstaller .exe
 ├── .flake8                        # Configuration for the linter
 ├── .coveragerc                    # Configuration for coverage reporting (coverage reports currently go nowhere from CI; codecov would be a nice improvement)
 ├── .pre-commit-config.yml         # Configuration for [pre-commit](https://pre-commit.com/)
-├── project_name                   # The main python package for the project
+├── staflversion                   # The main python package for the project
 │   ├── base.py                    # The base module for the project
 │   ├── __init__.py                # This tells Python that this is a package
 │   ├── __main__.py                # The entry point for the project
@@ -42,12 +42,12 @@ Stafl python template for modules and pyinstaller .exe
 
 ## Use of the template
 
-Several things are named `project_name` in:
+Several things are named `staflversion` in:
 - .github/workflows
 - .vscode/launch.json
 - .vscode/tasks.json
 - the pyinstaller spec
-- the `project_name` module
+- the `staflversion` module
 - setup.py
 
 All of those things should be renamed, along with file and folder names, to match the name of the application being developed.
