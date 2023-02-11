@@ -1,0 +1,34 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "run lint",
+            "type": "shell",
+            "command": "flake8 project_name/ tests/ --count --select=E9,F63,F7,F82 --show-source --statistics; flake8 project_name/ tests/ --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics; black -l 79 --check project_name/ tests/; mypy --ignore-missing-imports project_name/ tests/",
+            "problemMatcher": [
+                {
+                    "owner": "flake8",
+                    "source": "flake8",
+                    "pattern": [
+                        {
+                            "code": 4,
+                            "column": 3,
+                            "file": 1,
+                            "line": 2,
+                            "message": 5,
+                            "regexp": "^(.+):(\\d+):(\\d+): (\\w\\d+) (.+)$"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "label": "build executable",
+            "type": "shell",
+            "command": "pyinstaller --clean -y single_exe.spec",
+            "problemMatcher": []
+        }
+    ]
+}5

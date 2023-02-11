@@ -1,0 +1,124 @@
+name: Lint And Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  linter:
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.11]
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+
+      - name: Setup flake8 annotations
+        uses: rbialon/flake8-annotations@v1
+
+      - name: Run linter
+        run: |
+          # stop the build if there are Python syntax errors or undefined names
+          flake8 project_name/ tests/ --count --select=E9,F63,F7,F82 --show-source --statistics
+          
+          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+          flake8 project_name/ tests/ --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+          
+          black -l 79 --check project_name/ tests/
+          mypy --ignore-missing-imports project_name/ tests/
+         
+
+  tests:
+    needs: linter
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.11]
+        os: [windows-latest, macos-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+
+      - name: Install project
+        run: pip install .
+      
+      - name: Run tests
+        run: |
+          pytest -v --cov-report term --cov-report xml --cov-report html --cov-config .coveragerc --cov=project_name -l --tb=short --maxfail=1 tests/
+
+          
+  build-exe:
+    needs: tests
+      
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0 # for accurate versioning
+
+    - name: Install GitVersion
+      uses: gittools/actions/gitversion/setup@v0.9.7
+      with:
+        versionSpec: '5.x'
+
+    - name: Determine Version
+      id: gitversion
+      uses: StaflSystems/CustomGithubActions/ExecuteGitVersion@main
+
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements-dev.txt
+
+    - name: Install project
+      run: pip install .
+
+    - uses: webfactory/ssh-agent@v0.5.4
+      with:
+        ssh-private-key: ${{ secrets.ACTIONS_SSH_PRIVATE_KEY }}        
+
+    - name: Update version
+      shell: pwsh
+      run: |
+        rm project_name/VERSION
+        echo "${{ env.GitVersion_SemVer }}_${{ env.GitVersion_BuildMetaData}}" >> project_name/VERSION
+        
+    - name: Build Executable
+      shell: pwsh
+      run: |
+        pyinstaller --clean single_exe.spec
+        mv dist/project_name.exe dist/project_name_'${{ env.GitVersion_SemVer }}_${{ env.GitVersion_BuildMetaData}}'.exe
+
+    - name: Create a GitHub release
+      if: github.ref == 'refs/heads/main'
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: "dist/*.exe"
+        tag: ${{ steps.gitversion.outputs.FullSemVer }}
