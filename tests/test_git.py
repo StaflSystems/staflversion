@@ -1,16 +1,20 @@
 import pytest
 from os import system
+from pathlib import Path
+from shutil import rmtree
 
 from staflversion.git import GitWrapper
 
 
 @pytest.fixture
 def sample_repo():
+    rmtree("sample_repo", ignore_errors=True)
+    Path.mkdir("sample_repo")
     system(
-        "rm -rf sample_repo;\
-        mkdir sample_repo &&\
-        cd sample_repo &&\
+        "cd sample_repo &&\
         git init &&\
+        git config user.name 'test' &&\
+        git config user.email 'test@test.com' &&\
         git commit --allow-empty -m c1 &&\
         git tag 0.0.0+1 &&\
         git commit --allow-empty -m c2 &&\
@@ -22,7 +26,7 @@ def sample_repo():
     "
     )
     yield GitWrapper("sample_repo")
-    system("rm -rf sample_repo")
+    rmtree("sample_repo")
 
 
 def test_get_tags(sample_repo: GitWrapper):
