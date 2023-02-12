@@ -34,6 +34,18 @@ class GitWrapper:
     def get_head_commit_message(self) -> str:
         return self._run("log", "-1", "--format=%s").raise_on_error().stdout.strip()
 
+    def get_commit_messages_since_tag(self) -> List[str]:
+        last_tag = (
+            self._run("describe", "--tags", "--abbrev=0")
+            .raise_on_error()
+            .stdout.strip()
+        )
+        return (
+            self._run("log", f"{last_tag}..HEAD", "--format=%s")
+            .raise_on_error()
+            .stdout.splitlines()
+        )
+
     def _run(self, *args: str) -> GitRunResult:
         git_args = ["git"]
         git_args.extend(args)
