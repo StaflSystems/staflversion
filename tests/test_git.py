@@ -3,6 +3,7 @@ from os import system
 
 from staflversion.git import GitWrapper
 
+
 @pytest.fixture
 def sample_repo():
     system(
