@@ -1,16 +1,17 @@
 import pytest
 import tempfile
+from pytest import MonkeyPatch
 from os import system
 
 from staflversion.git import GitWrapper
 
 
 @pytest.fixture
-def sample_repo():
+def sample_repo(monkeypatch: MonkeyPatch):
     with tempfile.TemporaryDirectory() as tempdir:
+        monkeypatch.chdir(tempdir)
         system(
-            f"cd {tempdir} &&\
-            git init &&\
+            "git init &&\
             git config user.name 'test' &&\
             git config user.email 'test@test.com' &&\
             git commit --allow-empty -m c1 &&\
