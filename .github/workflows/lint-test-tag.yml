@@ -62,10 +62,9 @@ jobs:
           pytest -v --cov-report term --cov-report xml --cov-report html --cov-config .coveragerc --cov=staflversion -l --tb=short --maxfail=1 tests/
 
           
-  build-exe:
+  tag:
     needs: tests
-      
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
@@ -81,37 +80,8 @@ jobs:
       id: gitversion
       uses: StaflSystems/CustomGithubActions/ExecuteGitVersion@main
 
-    - uses: actions/setup-python@v4
-      with:
-        python-version: '3.11'
-
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements-dev.txt
-
-    - name: Install project
-      run: pip install .
-
-    - uses: webfactory/ssh-agent@v0.5.4
-      with:
-        ssh-private-key: ${{ secrets.ACTIONS_SSH_PRIVATE_KEY }}        
-
-    - name: Update version
-      shell: pwsh
-      run: |
-        rm staflversion/VERSION
-        echo "${{ env.GitVersion_SemVer }}_${{ env.GitVersion_BuildMetaData}}" >> staflversion/VERSION
-        
-    - name: Build Executable
-      shell: pwsh
-      run: |
-        pyinstaller --clean single_exe.spec
-        mv dist/staflversion.exe dist/staflversion_'${{ env.GitVersion_SemVer }}_${{ env.GitVersion_BuildMetaData}}'.exe
-
     - name: Create a GitHub release
       if: github.ref == 'refs/heads/main'
       uses: ncipollo/release-action@v1
       with:
-        artifacts: "dist/*.exe"
         tag: ${{ steps.gitversion.outputs.FullSemVer }}

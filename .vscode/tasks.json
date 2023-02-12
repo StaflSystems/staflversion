@@ -23,12 +23,6 @@
                     ]
                 }
             ]
-        },
-        {
-            "label": "build executable",
-            "type": "shell",
-            "command": "pyinstaller --clean -y single_exe.spec",
-            "problemMatcher": []
         }
     ]
 }

@@ -10,5 +10,4 @@ codecov
 mypy
 gitchangelog
 mkdocs
-pyinstaller
 pre-commit
