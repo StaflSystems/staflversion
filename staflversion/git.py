@@ -24,7 +24,7 @@ class GitRunResult:
 
 
 class GitWrapper:
-    def __init__(self, working_directory: Optional[str]):
+    def __init__(self, working_directory: Optional[str] = None):
         self.working_directory = working_directory
 
     def get_tags(self) -> List[str]:
