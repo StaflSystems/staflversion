@@ -71,17 +71,12 @@ jobs:
       with:
         fetch-depth: 0 # for accurate versioning
 
-    - name: Install GitVersion
-      uses: gittools/actions/gitversion/setup@v0.9.7
-      with:
-        versionSpec: '5.x'
-
     - name: Determine Version
-      id: gitversion
-      uses: StaflSystems/CustomGithubActions/ExecuteGitVersion@main
+      id: staflversion
+      uses: StaflSystems/CustomGithubActions/DetermineVersion@main
 
     - name: Create a GitHub release
       if: github.ref == 'refs/heads/main'
       uses: ncipollo/release-action@v1
       with:
-        tag: ${{ steps.gitversion.outputs.FullSemVer }}
+        tag: ${{ steps.staflversion.outputs.full }}
