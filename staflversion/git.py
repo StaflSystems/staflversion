@@ -22,6 +22,12 @@ class GitRunResult:
             raise RuntimeError(self)
         return self
 
+    def __str__(self) -> str:
+        return self.__repr__()
+
+    def __repr__(self) -> str:
+        return f"Exit Code: {self.exit_code}\nStdOut:\n{self.stdout}\n\nStdErr:\n{self.stderr}\n"
+
 
 class GitWrapper:
     def __init__(self, working_directory: Optional[str] = None):
