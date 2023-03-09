@@ -91,7 +91,12 @@ class StaflVersioner:
         self._git = git
 
     def determine_version(self) -> StaflVersion:
-        new_commit_messages = self._git.get_commit_messages_since_tag()
+        tags = self._git.get_tags()
+        
+        if tags:
+            new_commit_messages = self._git.get_commit_messages_since_tag()
+        else:
+            new_commit_messages = []
 
         set_version_matches = [
             self._SET_VERSION.match(message)
@@ -105,7 +110,7 @@ class StaflVersioner:
 
         versions = [
             StaflVersion.parse(t)
-            for t in self._git.get_tags()
+            for t in tags
             if StaflVersion.try_parse(t) is not None
         ]
         versions.sort(reverse=True)
