@@ -46,11 +46,12 @@ class GitWrapper:
             .raise_on_error()
             .stdout.strip()
         )
-        return (
-            self._run("log", f"{last_tag}..HEAD", "--format=%s")
+        messages = (
+            self._run("log", f"{last_tag}..HEAD", "--format=----------------%n%s%n%b")
             .raise_on_error()
-            .stdout.splitlines()
+            .stdout.split("----------------\n")
         )
+        return [message.strip() for message in messages if message.strip() != ""]
 
     def _run(self, *args: str) -> GitRunResult:
         git_args = ["git"]
