@@ -71,10 +71,6 @@ jobs:
       with:
         fetch-depth: 0 # for accurate versioning
 
-    - uses: webfactory/ssh-agent@v0.7.0
-      with:
-        ssh-private-key: ${{ secrets.ACTIONS_SSH_PRIVATE_KEY }}
-
     - name: Determine Version
       id: staflversion
       uses: StaflSystems/CustomGithubActions/DetermineVersion@main
