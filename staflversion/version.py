@@ -99,7 +99,7 @@ class StaflVersioner:
             new_commit_messages = []
 
         set_version_matches = [
-            self._SET_VERSION.match(message)
+            self._SET_VERSION.search(message)
             for message in new_commit_messages
             if not None
         ]

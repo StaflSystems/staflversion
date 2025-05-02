@@ -6,11 +6,15 @@
     "configurations": [
         {
             "name": "Debug",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "console": "integratedTerminal",
-            "justMyCode": true,
-            "module": "staflversion"
+            "justMyCode": false,
+            "module": "staflversion",
+            "cwd": "${workspaceFolder}/../test-repo",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
         },
     ]
 }
