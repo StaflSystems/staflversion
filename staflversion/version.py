@@ -85,7 +85,7 @@ class StaflVersioner:
     _INCREMENT_MAJOR = "+semver:major"
     _INCREMENT_MINOR = "+semver:minor"
     _INCREMENT_PATCH = "+semver:patch"
-    _SET_VERSION = re.compile(r"\+semver-set:" + StaflVersion.VERSION_REGEX.pattern[1:])
+    _SET_VERSION = re.compile(r"\+semver-set:" + StaflVersion.VERSION_REGEX.pattern[1:-1])
 
     def __init__(self, git: GitWrapper):
         self._git = git
