@@ -51,7 +51,7 @@ def test_version_compare_major():
 def test_version_increment_major():
     v1 = StaflVersion.parse("1.1.1-1")
     v2 = v1.increment_major()
-    assert v1.major - 1 == v2.major
+    assert v1.major + 1 == v2.major
     assert v2.minor == 0
     assert v2.patch == 0
     assert v2.build == 0
