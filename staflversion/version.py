@@ -9,7 +9,7 @@ from .git import GitWrapper
 @total_ordering
 class StaflVersion:
     VERSION_REGEX = re.compile(
-        r"^(?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)\+(?P<build>\d+)$"
+        r"^(?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)\-(?P<build>\d+)$"
     )
 
     def __init__(self, major: int, minor: int, patch: int, build: int):
@@ -44,7 +44,7 @@ class StaflVersion:
             return None
 
     def __str__(self) -> str:
-        return f"{self.major}.{self.minor}.{self.patch}+{self.build}"
+        return f"{self.major}.{self.minor}.{self.patch}-{self.build}"
 
     def __repr__(self) -> str:
         return str(self)
