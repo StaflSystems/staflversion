@@ -5,7 +5,6 @@ This is the principal module of the staflversion project.
 here you put your main classes and objects.
 """
 
-
 import subprocess
 
 from typing import List, Optional

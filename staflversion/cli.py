@@ -1,5 +1,4 @@
-"""CLI interface for staflversion project.
-"""
+"""CLI interface for staflversion project."""
 
 import argparse
 
