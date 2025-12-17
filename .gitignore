@@ -131,3 +131,6 @@ dmypy.json
 # example output
 example/*.csv
 settings.json
+
+# macOS files
+.DS_Store

@@ -132,3 +132,11 @@ def test_version_determine_set_version():
     )
     versioner = StaflVersioner(git)
     assert versioner.determine_version() == StaflVersion(1, 2, 3, 4)
+
+
+def test_version_patch_release():
+    git = MockGitWrapper(
+        ["Fix critical bug +semver:patch"], ["1.2.3+4-dev/patch", "1.2.2+0"]
+    )
+    versioner = StaflVersioner(git)
+    assert versioner.determine_version() == StaflVersion(1, 2, 4, 0)

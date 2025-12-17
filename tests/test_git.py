@@ -15,7 +15,8 @@ def tempdir():
 
 @pytest.fixture
 def sample_repo(tempdir: str, monkeypatch: MonkeyPatch):
-    # tempdir above must come before monkeypatch so that the directory is changed back before the directory is cleanup up
+    # tempdir above must come before monkeypatch so that the directory is
+    # changed back before the directory is cleaned up
     monkeypatch.chdir(tempdir)
     system(
         "git init &&\

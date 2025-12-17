@@ -9,7 +9,7 @@ from .git import GitWrapper
 @total_ordering
 class StaflVersion:
     VERSION_REGEX = re.compile(
-        r"^(?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)\+(?P<build>\d+)$"
+        r"^(?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)\+(?P<build>\d+)(-(?P<prerelease_metadata>.+))?$"
     )
 
     def __init__(self, major: int, minor: int, patch: int, build: int):
@@ -85,14 +85,16 @@ class StaflVersioner:
     _INCREMENT_MAJOR = "+semver:major"
     _INCREMENT_MINOR = "+semver:minor"
     _INCREMENT_PATCH = "+semver:patch"
-    _SET_VERSION = re.compile(r"\+semver-set:" + StaflVersion.VERSION_REGEX.pattern[1:-1])
+    _SET_VERSION = re.compile(
+        r"\+semver-set:" + StaflVersion.VERSION_REGEX.pattern[1:-1]
+    )
 
     def __init__(self, git: GitWrapper):
         self._git = git
 
     def determine_version(self) -> StaflVersion:
         tags = self._git.get_tags()
-        
+
         if tags:
             new_commit_messages = self._git.get_commit_messages_since_tag()
         else:
@@ -109,9 +111,7 @@ class StaflVersioner:
         increment_patch = any([self._INCREMENT_PATCH in m for m in new_commit_messages])
 
         versions = [
-            StaflVersion.parse(t)
-            for t in tags
-            if StaflVersion.try_parse(t) is not None
+            StaflVersion.parse(t) for t in tags if StaflVersion.try_parse(t) is not None
         ]
         versions.sort(reverse=True)
         last_version = versions[0] if versions else StaflVersion(0, 0, 0, 0)
